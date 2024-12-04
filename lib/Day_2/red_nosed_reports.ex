@@ -3,10 +3,22 @@ defmodule Day2.RedNosedReports do
 
   def count_safe_reports(file_path) do
     file_path
-    |> File.stream!()
-    |> Stream.map(&to_list/1)
+    |> get_stream_of_number_lists()
     |> Stream.filter(&LevelsReport.safe?(&1))
     |> Enum.count()
+  end
+
+  def count_safe_reports_with_dampener(file_path) do
+    file_path
+    |> get_stream_of_number_lists()
+    |> Stream.filter(&LevelsReport.safe_with_dampener?(&1))
+    |> Enum.count()
+  end
+
+  defp get_stream_of_number_lists(file_path) do
+    file_path
+    |> File.stream!()
+    |> Stream.map(&to_list/1)
   end
 
   defp to_list(levels) do
@@ -38,6 +50,17 @@ defmodule Day2.LevelsReport do
       end)
 
     safety
+  end
+
+  def safe_with_dampener?(report) do
+    Enum.reduce_while(0..length(report), false, fn offset, _safety ->
+      {_, rest} = List.pop_at(report, offset)
+      safe? = safe?(rest)
+
+      if safe?,
+        do: {:halt, true},
+        else: {:cont, false}
+    end)
   end
 
   defp levels_difference_safe?(levels_difference) do
