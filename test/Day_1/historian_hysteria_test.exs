@@ -6,12 +6,12 @@ defmodule Day1.HistorianHysteriaTest do
   describe "With file" do
    test "Calculate difference" do
     difference = HistorianHysteria.difference("test/Day_1/input.txt")
-    IO.puts("Difference is #{difference}")
+    assert difference == 2176849
    end
 
    test "Calculate similarity" do
-    difference = HistorianHysteria.similarity("test/Day_1/input.txt")
-    IO.puts("Similarity is #{difference}")
+    similarity_score = HistorianHysteria.similarity("test/Day_1/input.txt")
+    assert similarity_score == 23384288
    end
   end
 
