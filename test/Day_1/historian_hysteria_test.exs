@@ -5,8 +5,13 @@ defmodule Day1.HistorianHysteriaTest do
 
   describe "With file" do
    test "Calculate difference" do
-    difference = HistorianHysteria.calculate("test/Day_1/input.txt")
+    difference = HistorianHysteria.difference("test/Day_1/input.txt")
     IO.puts("Difference is #{difference}")
+   end
+
+   test "Calculate similarity" do
+    difference = HistorianHysteria.similarity("test/Day_1/input.txt")
+    IO.puts("Similarity is #{difference}")
    end
   end
 
@@ -72,6 +77,47 @@ defmodule Day1.HistorianHysteriaTest do
       difference = Calculator.list_difference(list_1, list_2)
 
       assert difference == 11
+    end
+  end
+
+  describe "Similarity calculator" do
+    test "two lists one item each, different values" do
+
+    end
+
+    test "two lists one item each, same values" do
+      list_1 = [42]
+      list_2 = [42]
+      similarity_score = Calculator.similarity_score(list_1, list_2)
+      assert similarity_score == 42
+    end
+
+    test "two lists one item each, all different values" do
+      list_1 = [42]
+      list_2 = [44]
+      similarity_score = Calculator.similarity_score(list_1, list_2)
+      assert similarity_score == 0
+    end
+
+    test "two lists two items each, all same values" do
+      list_1 = [3, 3]
+      list_2 = [3, 3]
+      similarity_score = Calculator.similarity_score(list_1, list_2)
+      assert similarity_score == 12
+    end
+
+    test "two lists two items each, all different values" do
+      list_1 = [3, 2]
+      list_2 = [4, 6]
+      similarity_score = Calculator.similarity_score(list_1, list_2)
+      assert similarity_score == 0
+    end
+
+    test "two lists, generic example" do
+      list_1 = [3, 4, 2, 1, 3, 3]
+      list_2 = [4, 3, 5, 3, 9, 3]
+      similarity_score = Calculator.similarity_score(list_1, list_2)
+      assert similarity_score == 31
     end
   end
 end
