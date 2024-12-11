@@ -161,4 +161,95 @@ defmodule Day4.CeresSearchTest do
       assert count == 2536
     end
   end
+
+  describe "count X-MAS" do
+    test "one 0° X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["M", "-", "M"],
+          1 => ["-", "A", "-"],
+          2 => ["S", "-", "S"]
+        })
+
+      assert count == 1
+    end
+
+    test "many 0° X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["M", "M", "M", "M"],
+          1 => ["-", "A", "A", "-"],
+          2 => ["S", "S", "S", "S"]
+        })
+
+      assert count == 2
+    end
+
+    test "one 90° X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["S", "-", "M"],
+          1 => ["-", "A", "-"],
+          2 => ["S", "-", "M"]
+        })
+
+      assert count == 1
+    end
+
+    test "one 180° X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["S", "-", "S"],
+          1 => ["-", "A", "-"],
+          2 => ["M", "-", "M"]
+        })
+
+      assert count == 1
+    end
+
+    test "one 270° X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["M", "-", "S"],
+          1 => ["-", "A", "-"],
+          2 => ["M", "-", "S"]
+        })
+
+      assert count == 1
+    end
+
+    test "overlapping X-MAS" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => ["S", "-", "M", "-", "S"],
+          1 => ["-", "A", "-", "A", "-"],
+          2 => ["S", "-", "M", "-", "S"]
+        })
+
+      assert count == 2
+    end
+
+    test "example" do
+      count =
+        Day4.CeresSearch.count_crossed_mas(%{
+          0 => [".", "M", ".", "S", ".", ".", ".", ".", ".", "."],
+          1 => [".", ".", "A", ".", ".", "M", "S", "M", "S", "."],
+          2 => [".", "M", ".", "S", ".", "M", "A", "A", ".", "."],
+          3 => [".", ".", "A", ".", "A", "S", "M", "S", "M", "."],
+          4 => [".", "M", ".", "S", ".", "M", ".", ".", ".", "."],
+          5 => [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+          6 => ["S", ".", "S", ".", "S", ".", "S", ".", "S", "."],
+          7 => [".", "A", ".", "A", ".", "A", ".", "A", ".", "."],
+          8 => ["M", ".", "M", ".", "M", ".", "M", ".", "M", "."],
+          9 => [".", ".", ".", ".", ".", ".", ".", ".", ".", "."]
+        })
+
+      assert count == 9
+    end
+
+    test "with input" do
+      count = Day4.CeresSearch.count_crossed_mas_from_file("test/Day_4/input.txt")
+      assert count == 0
+    end
+  end
 end

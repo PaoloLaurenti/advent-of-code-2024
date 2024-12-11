@@ -1,13 +1,24 @@
 defmodule Day4.CeresSearch do
   def count_xmas_from_file(file_path) do
+    file_path
+    |> get_map_from_file
+    |> count_xmas()
+  end
+
+  def count_crossed_mas_from_file(file_path) do
+    file_path
+    |> get_map_from_file
+    |> count_crossed_mas()
+  end
+
+  defp get_map_from_file(file_path) do
     {:ok, text} = File.read(file_path)
 
     text
-    |> String.split("\n")
+    |> String.split("\n", trim: true)
     |> Enum.with_index()
     |> Enum.map(fn {row, idx} -> {idx, String.split(row, "", trim: true)} end)
     |> Enum.into(%{})
-    |> count_xmas()
   end
 
   def count_xmas(map) do
@@ -154,5 +165,63 @@ defmodule Day4.CeresSearch do
       end
     end)
     |> Enum.reverse()
+  end
+
+  def count_crossed_mas(map) do
+    m_coordinates = find_m_coordinates(map)
+
+    Enum.map(m_coordinates, &count_crossed_mas_at(&1, map))
+    |> Enum.sum()
+  end
+
+  defp find_m_coordinates(map) do
+    Enum.flat_map(map, fn {row_idx, row} ->
+      Enum.with_index(row)
+      |> Enum.filter(fn {value, _idx} -> value == "M" end)
+      |> Enum.map(fn {_value, idx} -> {idx, row_idx} end)
+    end)
+  end
+
+  defp count_crossed_mas_at(m_coordinate, map) do
+    [
+      &zero_degrees_crossed_mas?/2,
+      &ninety_degrees_crossed_mas?/2,
+      &one_hundred_eighty_degrees_crossed_mas?/2,
+      &two_hundred_seventy_degrees_crossed_mas?/2
+    ]
+    |> Enum.filter(fn predicate -> predicate.(m_coordinate, map) end)
+    |> Enum.count()
+  end
+
+  defp zero_degrees_crossed_mas?({x, y}, map) do
+    second_m? = Map.get(map, y, []) |> Enum.at(x + 2) == "M"
+    central_a? = Map.get(map, y + 1, []) |> Enum.at(x + 1) == "A"
+    first_s? = Map.get(map, y + 2, []) |> Enum.at(x) == "S"
+    second_s? = Map.get(map, y + 2, []) |> Enum.at(x + 2) == "S"
+    second_m? && central_a? && first_s? && second_s?
+  end
+
+  defp ninety_degrees_crossed_mas?({x, y}, map) do
+    second_m? = Map.get(map, y + 2, []) |> Enum.at(x) == "M"
+    central_a? = Map.get(map, y + 1, []) |> Enum.at(x - 1) == "A" && x - 1 >= 0
+    first_s? = Map.get(map, y, []) |> Enum.at(x - 2) == "S" && x - 2 >= 0
+    second_s? = Map.get(map, y + 2, []) |> Enum.at(x - 2) == "S" && x - 2 >= 0
+    second_m? && central_a? && first_s? && second_s?
+  end
+
+  defp one_hundred_eighty_degrees_crossed_mas?({x, y}, map) do
+    second_m? = Map.get(map, y, []) |> Enum.at(x - 2) == "M" && x - 2 >= 0
+    central_a? = Map.get(map, y - 1, []) |> Enum.at(x - 1) == "A" && x - 1 >= 0 && y - 1 >= 0
+    first_s? = Map.get(map, y - 2, []) |> Enum.at(x) == "S" && y - 2 >= 0
+    second_s? = Map.get(map, y - 2, []) |> Enum.at(x - 2) == "S" && y - 2 >= 0
+    second_m? && central_a? && first_s? && second_s?
+  end
+
+  defp two_hundred_seventy_degrees_crossed_mas?({x, y}, map) do
+    second_m? = Map.get(map, y + 2, []) |> Enum.at(x) == "M"
+    central_a? = Map.get(map, y + 1, []) |> Enum.at(x + 1) == "A"
+    first_s? = Map.get(map, y, []) |> Enum.at(x + 2) == "S"
+    second_s? = Map.get(map, y + 2, []) |> Enum.at(x + 2) == "S"
+    second_m? && central_a? && first_s? && second_s?
   end
 end
