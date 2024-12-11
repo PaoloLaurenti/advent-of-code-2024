@@ -10,7 +10,7 @@ defmodule Day2.RedNosedReportsTest do
 
     test "report safety with dampener" do
       reports_safe_count = Day2.RedNosedReports.count_safe_reports_with_dampener("test/Day_2/input.txt")
-      IO.puts(reports_safe_count)
+      assert 577 == reports_safe_count
     end
   end
 
