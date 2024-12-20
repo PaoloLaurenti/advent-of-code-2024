@@ -114,8 +114,119 @@ defmodule Day5.PrintQueueTest do
     end
   end
 
+  describe "calculate sum of middle pages of fixed page updates with" do
+    test "one rule, one right page update" do
+      rules = [{42, 13}]
+      pages_updates = [[23, 42, 13, 75, 1]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 0
+    end
+
+    test "one rule, one wrong page update" do
+      rules = [{42, 13}]
+      pages_updates = [[13, 42, 23, 75, 1]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 23
+    end
+
+    test "one rule, two right page updates" do
+      rules = [{42, 13}]
+      pages_updates = [[23, 42, 13, 75, 1], [1, 42, 11, 25, 13]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 0
+    end
+
+    test "one rule, two wrong page updates" do
+      rules = [{42, 13}]
+      pages_updates = [[13, 42, 23, 75, 1], [1, 13, 11, 25, 42]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 36 #23 + 13
+    end
+
+    test "two rules, one right page update" do
+      rules = [{42, 13}, {13, 1}]
+      pages_updates = [[23, 42, 13, 75, 1]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 0
+    end
+
+    test "two rules, one wrong page update violating only one rule" do
+      rules = [{42, 13}, {1, 13}]
+      pages_updates = [[23, 42, 13, 75, 1]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 1
+    end
+
+    test "two rules, one wrong page update violating both rules" do
+      rules = [{42, 13}, {1, 13}]
+      pages_updates = [[23, 13, 42, 75, 1]]
+
+      result =
+        Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+
+      assert result == 1
+    end
+
+    test "example" do
+      rules = [
+        {47, 53},
+        {97, 13},
+        {97, 61},
+        {97, 47},
+        {75, 29},
+        {61, 13},
+        {75, 53},
+        {29, 13},
+        {97, 29},
+        {53, 29},
+        {61, 53},
+        {97, 53},
+        {61, 29},
+        {47, 13},
+        {75, 47},
+        {97, 75},
+        {47, 61},
+        {75, 61},
+        {47, 29},
+        {75, 13},
+        {53, 13}
+      ]
+
+      pages_updates = [
+        [75, 47, 61, 53, 29],
+        [97, 61, 53, 29, 13],
+        [75, 29, 13],
+        [75, 97, 47, 61, 53],
+        [61, 13, 29],
+        [97, 13, 75, 29, 47]
+      ]
+
+      result = Day5.PrintQueue.sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+      assert result == 123
+    end
+  end
+
   describe "calculate from file" do
-    result = Day5.PrintQueue.calculate("test/Day_5/input.txt")
-    assert result == 6612
+    {result1, result2} = Day5.PrintQueue.calculate("test/Day_5/input.txt")
+    assert result1 == 6612
+    assert result2 == 4944
   end
 end

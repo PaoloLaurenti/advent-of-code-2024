@@ -249,7 +249,7 @@ defmodule Day4.CeresSearchTest do
 
     test "with input" do
       count = Day4.CeresSearch.count_crossed_mas_from_file("test/Day_4/input.txt")
-      assert count == 0
+      assert count == 1875
     end
   end
 end

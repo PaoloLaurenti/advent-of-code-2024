@@ -8,6 +8,46 @@ defmodule Day5.PrintQueue do
     |> Enum.sum()
   end
 
+  def sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_update) do
+    Enum.map(pages_update, fn update ->
+      if page_update_correct?(rules, update) do
+        0
+      else
+        update = sort_page_update(rules, update)
+        middle_page(update)
+      end
+    end)
+    |> Enum.sum()
+  end
+
+  defp sort_page_update(rules, update) do
+    if page_update_correct?(rules, update) do
+      update
+    else
+      update =
+        Enum.reduce(rules, update, fn {previous, following}, update ->
+          indexed_update = Enum.with_index(update) |> Enum.into(%{})
+          previous_idx = Map.get(indexed_update, previous, -1)
+          following_idx = Map.get(indexed_update, following, -1)
+
+          if previous_idx >= 0 && following_idx >= 0 && previous_idx > following_idx do
+            {first_part, second_part} =
+              update
+              |> Enum.reject(&(&1 == previous))
+              |> Enum.split_while(&(&1 != following))
+
+            first_part
+            |> Enum.concat([previous])
+            |> Enum.concat(second_part)
+          else
+            update
+          end
+        end)
+
+      sort_page_update(rules, update)
+    end
+  end
+
   defp page_update_correct?(rules, update) do
     Enum.all?(rules, fn {previous, following} ->
       indexed_update = Enum.with_index(update) |> Enum.into(%{})
@@ -28,7 +68,9 @@ defmodule Day5.PrintQueue do
     {rules, pages_updates} = get_data_from_file(file_path)
     rules = Enum.reverse(rules)
     pages_updates = Enum.reverse(pages_updates)
-    sum_middle_page_numbers_of_correct_updates(rules, pages_updates)
+    res1 = sum_middle_page_numbers_of_correct_updates(rules, pages_updates)
+    res2 = sum_middle_page_numbers_of_fixed_wrong_updates(rules, pages_updates)
+    {res1, res2}
   end
 
   defp get_data_from_file(file_path) do
