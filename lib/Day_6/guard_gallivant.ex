@@ -1,14 +1,12 @@
 defmodule Day6.GuardGallivant do
   def count_guard_distinct_positions(file_path) do
     {map, guard_position} = get_map_from_file(file_path)
-    IO.inspect(get_in(map, [90, 71]))
-    IO.inspect(guard_position)
     predict_distinct_positions_visited_by_a_guard(map, guard_position, :north)
   end
 
   defp get_map_from_file(file_path) do
     File.read!(file_path)
-    |> String.split("\n")
+    |> String.split("\n", trim: true)
     |> Enum.with_index()
     |> Enum.reduce({%{}, {0, 0}}, fn {line, y_idx}, {map, guard_position} ->
       row =
@@ -31,11 +29,9 @@ defmodule Day6.GuardGallivant do
 
       map = Map.put(map, y_idx, row)
 
-      case Enum.find_index(row, fn {_, val} -> val == :guard end) do
+      case Enum.find(row, fn {_, val} -> val == :guard end) do
         nil -> {map, guard_position}
-        pos ->
-          IO.inspect({pos, y_idx})
-          {map, {pos, y_idx}}
+        {pos, _} -> {map, {pos, y_idx}}
       end
     end)
   end

@@ -296,7 +296,7 @@ defmodule Day6.GuardGallivantTest do
 
     test "with input file" do
       prediction = Day6.GuardGallivant.count_guard_distinct_positions("test/Day_6/input.txt")
-      assert prediction == 0
+      assert prediction == 5086
     end
   end
 end
